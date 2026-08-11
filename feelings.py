@@ -15,9 +15,8 @@ def get_mem():
         mem_free = None
 
         for line in data.split('\n'):
-            print(line)
             if 'MemFree' in line:
-                mem_total = int(line.split()[1])
+                mem_free = int(line.split()[1])
         return mem_free
 
 def get_cpu():
