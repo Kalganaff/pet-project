@@ -1,21 +1,19 @@
+import sqlite3
 import time
 import os
 
-
-def read_proc(file):
-    with open(f'/proc/{file}', 'r') as f:
+def get_load(file):
+    with open(f'/proc/loadavg', 'r') as f:
+        data = f.read().split()
+        print(data)
         return f.read()
 
+def get_mem(file):
+    with open(f'/proc/meminfo', 'r') as f:
+        return f.read()
 
-while True:
-    # Читаем данные
-    meminfo = read_proc('meminfo')
-    loadavg = read_proc('loadavg')
-    cpu_stat = read_proc('stat')
+def get_cpu(file):
+    with open(f'/proc/stat', 'r') as f:
+        return f.read()
 
-    # Обрабатываем (логируем, выводим, сохраняем)
-    print(f"[{time.strftime('%H:%M:%S')}] Load: {loadavg.split()[0]}")
-
-    # Ждем 5 секунд
-    time.sleep(5)
-
+print(get_load)
