@@ -1,7 +1,3 @@
-import sqlite3
-import time
-import os
-
 def get_load():
     with open(f'/proc/loadavg', 'r') as f:
         data = f.read().split()
@@ -18,10 +14,3 @@ def get_mem():
             if 'MemFree' in line:
                 mem_free = int(line.split()[1])
         return mem_free
-
-def get_cpu():
-    with open(f'/proc/stat', 'r') as f:
-        return f.read()
-
-print(get_load())
-print(get_mem())
