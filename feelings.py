@@ -5,15 +5,24 @@ import os
 def get_load():
     with open(f'/proc/loadavg', 'r') as f:
         data = f.read().split()
-        print(data)
-        return f.read()
+        load_1min = float(data[0])
+        print(load_1min)
+        return load_1min
 
 def get_mem():
     with open(f'/proc/meminfo', 'r') as f:
-        return f.read()
+        data = f.read()
+        mem_free = None
+
+        for line in data.split('\n'):
+            print(line)
+            if 'MemFree' in line:
+                mem_total = int(line.split()[1])
+        return mem_free
 
 def get_cpu():
     with open(f'/proc/stat', 'r') as f:
         return f.read()
 
 print(get_load())
+print(get_mem())
