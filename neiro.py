@@ -8,7 +8,7 @@ mem_metrics = [item[0] for item in raw_mem]
 # Сохраняем новые метрики
 save_metrics()
 weights = [0.1, 0.2]
-alpha = 0.1
+alpha = 0.001
 
 
 def neural_network(input, weight):
@@ -23,7 +23,7 @@ def w_sum(a,b):
     return output
 
 
-for iteration in range(20):
+for iteration in range(10):
     input = [load_metric[0], mem_metrics[0]]
     load_max = [1]
     load_max_al = load_max[0]
