@@ -1,13 +1,19 @@
-from sqlite import save_metrics, load_metrics_db
 
-raw_load = load_metrics_db("SELECT load FROM metrics")
-raw_mem = load_metrics_db("SELECT mem FROM metrics")
-load_metric = [item[0] for item in raw_load]
-mem_metrics = [item[0] for item in raw_mem]
+from sqlite import save_metrics, get_normalized_metrics
+import numpy as np
 
-# Сохраняем новые метрики
-save_metrics()
-weights = [0.1, 0.2]
+#1.ЗАПИСЬ ДАННЫХ
+save_metrics() # Функция обращается к proc собирает данные и записывает в базу
+data = get_normalized_metrics() # Функция вытаскивает уже собранные данные из базы и так как числа большие нормализует их
+load = data['load']
+print("Загрузка" + str(load))
+mem = data['mem']
+print("Свободная память" + str(mem))
+
+
+#3.НЕЙРОСЕТЬ
+
+weights = [0.1,0.1]
 alpha = 0.001
 
 
@@ -23,21 +29,21 @@ def w_sum(a,b):
     return output
 
 
-for iteration in range(10):
-    input = [load_metric[0], mem_metrics[0]]
-    load_max = [1]
-    load_max_al = load_max[0]
-    pred = neural_network(input, weights)
-    error = (pred - load_max_al) ** 2
-    delta = pred - load_max_al
-    weights_delta = [input[i] * delta for i in range(len(input))]
-    #weights_delta = input * delta
-    print(f"Prediction: {pred}")
-    print(f"Error: {error}")
-    print(f"Delta: {delta}")
-    print(f"Weights delta: {weights_delta}")
-    for i in range(len(weights)):
-        weights[i] -= weights_delta[i] * alpha
+for iteration in range(4):
+    for i in range(len(load)): # проходим по всем образцам
+        input = [load[i], mem[i]]
+        load_max = [0, 1, 2]
+        load_max_al = load_max[1]
+        pred = neural_network(input, weights)
+        error = (pred - load_max_al) ** 2
+        delta = pred - load_max_al
+        weights_delta = [input[i] * delta for i in range(len(input))]
+        print(f"Prediction: {pred}")
+        print(f"Error: {error}")
+        print(f"Delta: {delta}")
+        print(f"Weights delta: {weights_delta}")
+        for i in range(len(weights)):
+            weights[i] -= weights_delta[i] * alpha
 
 
     print(f"Updated weights: {weights}")

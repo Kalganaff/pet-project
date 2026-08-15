@@ -27,3 +27,25 @@ def load_metrics_db(metrics_db):
     con.close()
     return rows
 
+
+def get_normalized_metrics():
+    """Загружает и нормализует данные для нейросети"""
+    raw_load = load_metrics_db("SELECT load FROM metrics")
+    raw_mem = load_metrics_db("SELECT mem FROM metrics")
+
+    load_metric = [row[0] for row in raw_load]
+    mem_metric = [row[0] for row in raw_mem]
+
+    # Нормализация
+    def normalize(x):
+        mn, mx = min(x), max(x)
+        return [(v - mn) / (mx - mn + 1e-8) for v in x], (mn, mx)
+
+    load_norm, load_params = normalize(load_metric)
+    mem_norm, mem_params = normalize(mem_metric)
+
+    # Возвращаем нормализованные данные + параметры для новых данных
+    return {
+        'load': load_norm,
+        'mem': mem_norm,
+    }
